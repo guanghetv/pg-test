@@ -41,7 +41,7 @@ CREATE TYPE regist_type AS ENUM (
 
 CREATE TYPE e_gender AS ENUM ('male', 'female');
 CREATE TYPE e_from AS ENUM ( 'pc', 'ios', 'android', 'mobile', 'shadow');
-CREATE TYPE e_role AS ENUM ( 'student', 'teacher', 'editor' );
+CREATE TYPE e_role AS ENUM ( 'student', 'teacher', 'editor', 'shadow', 'customerService', 'shine' );
 
 CREATE TABLE "user" (
   "id" uuid,
@@ -51,8 +51,8 @@ CREATE TABLE "user" (
   "nickname" varchar(60),
   "password" text,
   "channel" varchar(30),
-  "coins" int CHECK (coins > 0),
-  "points" int CHECK (points > 0),
+  "coins" int CHECK (coins >= 0),
+  "points" int CHECK (points >= 0),
   "type" regist_type,
   "gender" e_gender,
   "email" varchar(60),
@@ -61,8 +61,9 @@ CREATE TABLE "user" (
   "from" e_from,
   "role" e_role,
   "salt" text,
-  PRIMARY KEY ("id"),
-  CONSTRAINT proper_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
+  _id varchar(24),
+  PRIMARY KEY ("id")
+  /*CONSTRAINT proper_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')*/
 );
 
 CREATE INDEX "user_name_idx" ON  "user" ("name");
@@ -72,7 +73,20 @@ CREATE INDEX "user_regist_time_idx" ON  "user" ("registTime");
 
 COMMENT ON COLUMN "user".id IS 'use uuid_generate_v1mc() generate uuid!';
 COMMENT ON COLUMN "user".phone IS 'include global phone number';
+COMMENT ON COLUMN "user"._id IS 'ObjectId in mongodb';
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+
+CREATE FUNCTION user_uuid() RETURNS trigger as $user_uuid$
+    BEGIN
+        NEW.id := uuid_generate_v1mc();
+        RETURN NEW;
+    END;
+
+$user_uuid$ LANGUAGE plpgsql;
+
+CREATE TRIGGER emp_stamp BEFORE INSERT on "user"
+    FOR EACH ROW EXECUTE PROCEDURE user_uuid();
 
 ```

@@ -38,25 +38,21 @@ if (os.path.isfile(parentDir +'/data/users.csv') == False):
     print 'remove ObjectId tag finished'
 
 
-# add uuid
-# os.system("""psql -h 10.8.2.42 -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' """)
-# # out = os.system("""psql -h 10.8.2.42 -c 'select uuid_generate_v1mc();' """)
-# proc = subprocess.Popen("""psql -h 10.8.2.42 -c 'select uuid_generate_v1mc();' """, stdout=subprocess.PIPE)
-# os.popen("psql -h 10.8.2.42 -c 'select uuid_generate_v1mc();'").readlines()
+host = '10.8.2.42'
+dbUser = 'postgres'
 
-# out = proc.stdout.read()
-# print out
-
+# dbUser = 'master'
 # host = 'onions-test0314.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
-# cmd = """
-#     PGPASSWORD=Yangcong345 \
-#     psql -h {} -p 5432 \
-#     -U master -d mydb \
-#     -c "\copy user(subject,name,status,\\"order\\",\\"createTime\\",_id) \
-#     from '{}/data/users.csv' \
-#     delimiter as ',' csv header"
-# """.format(host, parentDir)
 
-# print cmd
+cmd = """
+    PGPASSWORD=Yangcong345 \
+    psql -h {} -p 5432 \
+    -U {} -d onion \
+    -c "\copy \\"user\\"(name,target,\\"customSchool\\",nickname,password,channel,coins,points,type,gender,email,phone,\\"registTime\\",\\"from\\",role,salt,_id) \
+    from '{}/data/users.csv' \
+    delimiter as ',' csv header"
+""".format(host, dbUser, parentDir)
 
-# os.system(cmd)
+print cmd
+
+os.system(cmd)
