@@ -90,3 +90,38 @@ CREATE TRIGGER emp_stamp BEFORE INSERT on "user"
     FOR EACH ROW EXECUTE PROCEDURE user_uuid();
 
 ```
+
+
+# 视频数据
+```sql
+
+CREATE TABLE video (
+  "id" serial,
+  "keywords" text,
+  "name" text,
+  "createTime" timestamptz,
+  _id varchar(24),
+  PRIMARY KEY ("id")
+);
+
+COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
+
+```
+
+# 视频完成状态
+```sql
+
+CREATE TYPE e_finish_state AS ENUM ('unfinished', 'finished');
+
+CREATE TABLE "videoStatus" (
+  "userId" uuid REFERENCES "user" (id),
+  "videoId" integer REFERENCES video (id) ON DELETE CASCADE,
+  "finishTime" timestamptz,
+  "state" e_finish_state,
+  "createTime" timestamptz default current_timestamp,
+  PRIMARY KEY ("userId", "videoId")
+);
+
+CREATE INDEX "video_status_create_time_idx" ON  "videoStatus" ("createTime");
+
+```

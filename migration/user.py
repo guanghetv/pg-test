@@ -38,11 +38,11 @@ if (os.path.isfile(parentDir +'/data/users.csv') == False):
     print 'remove ObjectId tag finished'
 
 
-host = '10.8.2.42'
-dbUser = 'postgres'
+# host = '10.8.2.42'
+# dbUser = 'postgres'
 
-# dbUser = 'master'
-# host = 'onions-test0314.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
+dbUser = 'master'
+host = 'onions-test0314.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
 
 cmd = """
     PGPASSWORD=Yangcong345 \
