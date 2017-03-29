@@ -1,23 +1,57 @@
 # 章节
 ```sql
 
-CREATE TYPE publishstate AS ENUM ('unpublished', 'published');
+CREATE TYPE publish_state AS ENUM ('unpublished', 'published');
 CREATE TYPE e_subject AS ENUM ('math', 'physics');
 
-CREATE TABLE "chapter" (
+CREATE TABLE chapter (
   "id" serial,
   "subject" e_subject NOT NULL,
   "name" text NOT NULL,
-  "status" publishstate NOT NULL,
+  "state" publish_state NOT NULL,
   "order" int CONSTRAINT positive_order CHECK ("order" > 0) NOT NULL,
   "createTime" timestamptz default current_timestamp,
-  _id varchar(24),
+  _id char(24),
   PRIMARY KEY ("id")
 );
 
-CREATE INDEX "chapter_status_idx" ON  "chapter" ("status");
+CREATE INDEX "chapter_state_idx" ON  "chapter" ("state");
 
 COMMENT ON COLUMN chapter._id IS 'ObjectId in mongodb';
+
+```
+
+# 主题
+
+```sql
+
+CREATE TYPE e_theme_icon_type AS ENUM ('perfect', 'common');
+
+CREATE TYPE theme_icon AS (
+  image varchar(200),
+  svg varchar(200),
+  background varchar(20),
+  type e_theme_icon_type,
+  goldenBackground varchar(200)
+);
+
+CREATE TABLE "theme" (
+  "id" serial,
+  "chapterId" int NOT NULL REFERENCES chapter(id),
+  "name" text NOT NULL,
+  "pay" bool NOT NULL,
+  "icons" theme_icon[] NOT NULL,
+  "relatedThemeId" int,
+  "desc" text,
+  "hasPainPoint" bool NOT NULL,
+  "createTime" timestamptz default current_timestamp,
+  _id char(24),
+  PRIMARY KEY ("id")
+);
+
+CREATE INDEX "theme_chapter_id_idx" ON  "theme" ("chapterId");
+
+COMMENT ON COLUMN theme._id IS 'ObjectId in mongodb';
 
 ```
 
