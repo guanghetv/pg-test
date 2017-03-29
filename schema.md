@@ -55,6 +55,33 @@ COMMENT ON COLUMN theme._id IS 'ObjectId in mongodb';
 
 ```
 
+# 知识点
+
+```sql
+
+CREATE TYPE e_pain_point AS ENUM ('big', 'small');
+CREATE TYPE e_topic_type AS ENUM ('A', 'B', 'C', 'D', 'E', 'I', 'S', 'jyfs', 'dtsz', 'chapter_exam');
+
+CREATE TABLE "topic" (
+  "id" serial,
+  "themeId" int NOT NULL REFERENCES theme(id),
+  "name" text NOT NULL,
+  "desc" text,
+  "pay" bool NOT NULL,
+  "type" e_topic_type NOT NULL,
+  "state" publish_state NOT NULL,
+  "painPoint" e_pain_point NOT NULL,
+  _id char(24),
+  "keyPoint" bool NOT NULL,
+  PRIMARY KEY ("id")
+);
+
+CREATE INDEX ON  "topic" ("themeId");
+
+COMMENT ON COLUMN topic._id IS 'ObjectId in mongodb';
+
+```
+
 # 用户
 ```sql
 
