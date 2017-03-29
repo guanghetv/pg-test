@@ -38,20 +38,19 @@ def mock(limit, offset):
         userId = row['id']
 
         with conn.cursor() as videoStatusCur:
-            print 'conn..'
 
+            # TODO: 需要把用户完成视频的记录打散，更加随机
             for video in videos:
                 videoId = video['id']
+
+                # TODO: 需要随机完成状态
                 sql = """
                     INSERT INTO "videoStatus" ("userId","videoId","finishTime",state) \
                     VALUES (%s, %s, %s, %s) """
 
-                print 'pre insert'
                 videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished'))
-                print 'insert'
 
             conn.commit()
-            print 'commit'
 
     dictCursor.close()
     conn.close()
