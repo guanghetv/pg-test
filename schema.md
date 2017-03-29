@@ -82,6 +82,28 @@ COMMENT ON COLUMN topic._id IS 'ObjectId in mongodb';
 
 ```
 
+# 视频
+```sql
+
+CREATE TABLE "video" (
+  "id" serial,
+  "vmId" char(24) NOT NULL,
+  "keywords" text,
+  "name" text NOT NULL,
+  "titleTime" int NOT NULL,
+  "finishTime" int NOT NULL,
+  duration int NOT NULL,
+  "createTime" timestamptz default current_timestamp,
+  _id char(24),
+  PRIMARY KEY ("id")
+);
+
+CREATE INDEX ON  video ("videoId");
+
+COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
+
+```
+
 # 用户
 ```sql
 
