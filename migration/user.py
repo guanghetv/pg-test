@@ -15,7 +15,8 @@ parentDir = os.path.dirname(currentDir)
 if (os.path.isfile(parentDir +'/data/users.csv') == False):
     os.system("""
         ssh -n master@10.8.8.8 "mongoexport -h 10.8.8.8 -d onion40-backup -c users \
-        --fields name,target,customSchool,nickname,password,channel,coins,points,type,gender,email,phone,registTime,from,role,salt,_id \
+        --fields name,target,customSchool,nickname,password,channel,coins,points, \
+            type,gender,email,phone,registTime,from,role,salt,_id \
         --type=csv -o data/users.csv"
         """)
 
@@ -48,7 +49,8 @@ cmd = """
     PGPASSWORD=Yangcong345 \
     psql -h {} -p 5432 \
     -U {} -d onion \
-    -c "\copy \\"user\\"(name,target,\\"customSchool\\",nickname,password,channel,coins,points,type,gender,email,phone,\\"registTime\\",\\"from\\",role,salt,_id) \
+    -c "\copy \\"user\\"(name,target,\\"customSchool\\",nickname,password, \
+    channel,coins,points,type,gender,email,phone,\\"registTime\\",\\"from\\",role,salt,_id) \
     from '{}/data/users.csv' \
     delimiter as ',' csv header"
 """.format(host, dbUser, parentDir)

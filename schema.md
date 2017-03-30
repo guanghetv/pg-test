@@ -247,7 +247,7 @@ COMMENT ON COLUMN "user"._id IS 'ObjectId in mongodb';
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
-CREATE FUNCTION user_uuid() RETURNS trigger as $user_uuid$
+CREATE OR REPLACE FUNCTION user_uuid() RETURNS trigger as $user_uuid$
     BEGIN
         NEW.id := uuid_generate_v1mc();
         RETURN NEW;
