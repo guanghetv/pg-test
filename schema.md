@@ -147,6 +147,49 @@ CREATE TABLE "problem" (
 ```
 
 
+# 练习单元
+
+```sql
+
+CREATE TABLE practice (
+  "id" serial,
+  "name" text NOT NULL,
+  "createTime" timestamptz default current_timestamp,
+  _id char(24),
+  PRIMARY KEY ("id")
+);
+
+```
+
+
+# 练习与题库的多对多关系
+
+```sql
+
+CREATE TYPE practice_level_pool AS ENUM ('step', 'target', 'extend', 'hanger', 'exam');
+CREATE TYPE practice_level_tag AS ENUM (
+  'continuity',
+  'noncontinuity',
+  'optional',
+  'variant',
+  'hard',
+  'hard_variant',
+  'internal_migration'
+);
+
+CREATE TABLE "practiceLevel" (
+  "practiceId" int,
+  "problemId" int,
+  "levelNo" int,
+  "pool" practice_level_pool,
+  "tags" practice_level_tag[],
+  score int CHECK (score > 0) NOT NULL,
+  "createTime" timestamptz,
+  PRIMARY KEY ("practiceId", "problemId")
+);
+
+```
+
 # 用户
 ```sql
 
