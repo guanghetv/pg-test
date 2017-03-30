@@ -98,11 +98,54 @@ CREATE TABLE "video" (
   PRIMARY KEY ("id")
 );
 
-CREATE INDEX ON  video ("videoId");
-
 COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
 
 ```
+
+# 知识点内容(视频&练习)的多对多关系
+
+```sql
+
+CREATE TYPE topic_module_type AS ENUM ('video', 'practice');
+
+CREATE TABLE "topicModule" (
+  "topicId" int,
+  "moduleId" int,
+  "type" topic_module_type,
+  "createTime" timestamptz default current_timestamp,
+  "updateTime" timestamptz,
+  PRIMARY KEY ("topicId", "moduleId", "type")
+);
+
+```
+
+
+# 题库
+
+```sql
+
+CREATE TYPE problem_type AS ENUM ('single', 'multi', 'blank', 'exam');
+CREATE TYPE problem_chioce AS (
+  body text,
+  correct bool
+);
+
+CREATE TABLE "problem" (
+  "id" serial,
+  "body" text NOT NULL,
+  "choices" problem_chioce[],
+  "type" problem_type,
+  "explain" text,
+  "blanks" text[],
+  "prompts" text[],
+  "source" text,
+  difficulty int CHECK (difficulty > 0) NOT NULL,
+  _id char(24),
+  PRIMARY KEY ("id")
+);
+
+```
+
 
 # 用户
 ```sql
