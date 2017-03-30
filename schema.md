@@ -260,6 +260,16 @@ CREATE TRIGGER emp_stamp BEFORE INSERT on "user"
 
 ```
 
+因为早期数据类型控制不严格,导入数据需要临时放宽限制
+
+```sql
+
+alter table "user" alter COLUMN phone type varchar(99);
+alter table "user" alter COLUMN email type varchar(99);
+alter table "user" alter COLUMN channel type varchar(99);
+
+```
+
 
 # 视频数据
 ```sql
