@@ -109,7 +109,7 @@ COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
 CREATE TYPE topic_module_type AS ENUM ('video', 'practice');
 
 CREATE TABLE "topicModule" (
-  "topicId" int,
+  "topicId" int REFERENCES topic(id) ON DELETE CASCADE,
   "moduleId" int,
   "type" topic_module_type,
   "createTime" timestamptz default current_timestamp,
@@ -178,7 +178,7 @@ CREATE TYPE practice_level_tag AS ENUM (
 );
 
 CREATE TABLE "practiceLevel" (
-  "practiceId" int,
+  "practiceId" int REFERENCES practice(id) ON DELETE CASCADE,
   "problemId" int,
   "levelNo" int,
   "pool" practice_level_pool,
