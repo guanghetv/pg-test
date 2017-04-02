@@ -93,6 +93,8 @@ CREATE TABLE "video" (
   "titleTime" int NOT NULL,
   "finishTime" int NOT NULL,
   duration int NOT NULL,
+  subject e_subject NOT NULL,
+  stage e_stage NOT NULL,
   "createTime" timestamptz default current_timestamp,
   _id char(24),
   PRIMARY KEY ("id")
@@ -119,7 +121,6 @@ CREATE TABLE "topicModule" (
 
 ```
 
-
 # 题库
 
 ```sql
@@ -140,6 +141,8 @@ CREATE TABLE "problem" (
   "prompts" text[],
   "source" text,
   difficulty int CHECK (difficulty > 0) NOT NULL,
+  subject e_subject NOT NULL,
+  stage e_stage NOT NULL,
   _id char(24),
   PRIMARY KEY ("id")
 );
@@ -154,6 +157,8 @@ CREATE TABLE "problem" (
 CREATE TABLE practice (
   "id" serial,
   "name" text NOT NULL,
+  subject e_subject NOT NULL,
+  stage e_stage NOT NULL,
   "createTime" timestamptz default current_timestamp,
   _id char(24),
   PRIMARY KEY ("id")
@@ -291,16 +296,48 @@ COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
 ```sql
 
 CREATE TYPE e_finish_state AS ENUM ('unfinished', 'finished');
+CREATE TYPE e_stage AS ENUM ('primary', 'middle', 'high');
 
 CREATE TABLE "videoStatus" (
   "userId" uuid REFERENCES "user" (id),
   "videoId" integer REFERENCES video (id) ON DELETE CASCADE,
-  "finishTime" timestamptz,
   "state" e_finish_state,
+  subject e_subject NOT NULL,
+  stage e_stage NOT NULL,
+  "finishTime" timestamptz,
   "createTime" timestamptz default current_timestamp,
   PRIMARY KEY ("userId", "videoId")
 );
 
 CREATE INDEX "video_status_create_time_idx" ON  "videoStatus" ("createTime");
 
+-- partition videoStatus by (subject,stage)
+
+CREATE TABLE "videoStatusMathMiddle" (
+  "userId" uuid REFERENCES "user" (id),
+  "videoId" integer REFERENCES video (id) ON DELETE CASCADE,
+  "state" e_finish_state,
+  subject e_subject NOT NULL check (subject='math'),
+  stage e_stage NOT NULL check (stage='middle'),
+  "finishTime" timestamptz,
+  "createTime" timestamptz default current_timestamp,
+  PRIMARY KEY ("userId", "videoId")
+);
+
+-- 练习完成状态
+
+CREATE TABLE "practiceStatus" (
+  "userId" uuid REFERENCES "user" (id),
+  "practiceId" integer REFERENCES video (id) ON DELETE CASCADE,
+  "state" e_finish_state,
+  subject e_subject NOT NULL check (subject='math'),
+  stage: e_stage,
+  "finishTime" timestamptz,
+  "createTime" timestamptz default current_timestamp,
+  PRIMARY KEY ("userId", "practiceId")
+);
+
+CREATE INDEX "practice_status_create_time_idx" ON  "practiceStatus" ("createTime");
+
 ```
+
