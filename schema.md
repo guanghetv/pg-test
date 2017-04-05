@@ -295,12 +295,12 @@ COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
 # 视频完成状态
 ```sql
 
-CREATE TYPE e_finish_state AS ENUM ('unfinished', 'finished');
+CREATE TYPE e_finish_state AS ENUM ('unfinish', 'finish', 'perfect');
 CREATE TYPE e_stage AS ENUM ('primary', 'middle', 'high');
 
 CREATE TABLE "videoStatus" (
   "userId" uuid REFERENCES "user" (id),
-  "videoId" integer REFERENCES video (id) ON DELETE CASCADE,
+  "videoId" integer NOT NULL,
   "state" e_finish_state,
   subject e_subject NOT NULL,
   stage e_stage NOT NULL,
@@ -311,18 +311,8 @@ CREATE TABLE "videoStatus" (
 
 CREATE INDEX "video_status_create_time_idx" ON  "videoStatus" ("createTime");
 
--- partition videoStatus by (subject,stage)
+COMMENT ON COLUMN "videoStatus"."videoId" IS 'REFERENCES can not use on foreign table';
 
-CREATE TABLE "videoStatusMathMiddle" (
-  "userId" uuid REFERENCES "user" (id),
-  "videoId" integer REFERENCES video (id) ON DELETE CASCADE,
-  "state" e_finish_state,
-  subject e_subject NOT NULL check (subject='math'),
-  stage e_stage NOT NULL check (stage='middle'),
-  "finishTime" timestamptz,
-  "createTime" timestamptz default current_timestamp,
-  PRIMARY KEY ("userId", "videoId")
-);
 
 -- 练习完成状态
 
