@@ -43,7 +43,7 @@ if (os.path.isfile(parentDir +'/data/users.csv') == False):
 # dbUser = 'postgres'
 
 dbUser = 'master'
-host = 'onions-test0314.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
+host = 'onion-t02.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
 
 cmd = """
     PGPASSWORD=Yangcong345 \

@@ -301,6 +301,11 @@ alter table "user" alter COLUMN phone type varchar(99);
 alter table "user" alter COLUMN email type varchar(99);
 alter table "user" alter COLUMN channel type varchar(99);
 
+-- go back
+alter table "user" alter COLUMN phone type varchar(14);
+alter table "user" alter COLUMN email type varchar(60);
+alter table "user" alter COLUMN channel type varchar(30);
+
 ```
 
 
