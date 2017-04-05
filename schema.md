@@ -85,6 +85,8 @@ COMMENT ON COLUMN topic._id IS 'ObjectId in mongodb';
 # 视频
 ```sql
 
+CREATE TYPE e_stage AS ENUM ('primary', 'middle', 'high');
+
 CREATE TABLE "video" (
   "id" serial,
   "vmId" char(24) NOT NULL,
@@ -195,6 +197,32 @@ CREATE TABLE "practiceLevel" (
 
 ```
 
+
+# 知识点和视频的多对多关系
+```sql
+
+CREATE TABLE "topicVideo" (
+  "topicId" integer REFERENCES "topic" (id),
+  "videoId" integer REFERENCES "video" (id) ON DELETE CASCADE,
+  "createTime" timestamptz default current_timestamp,
+  "updateTime" timestamptz NOT NULL,
+  PRIMARY KEY ("topicId", "videoId")
+);
+
+
+-- 知识点和练习的多对多关系
+
+CREATE TABLE "topicPractice" (
+  "topicId" integer REFERENCES "topic" (id),
+  "practiceId" integer REFERENCES video (id) ON DELETE CASCADE,
+  "createTime" timestamptz default current_timestamp,
+  "updateTime" timestamptz NOT NULL,
+  PRIMARY KEY ("topicId", "practiceId")
+);
+
+```
+
+
 # 用户
 ```sql
 
@@ -275,59 +303,4 @@ alter table "user" alter COLUMN channel type varchar(99);
 
 ```
 
-
-# 视频数据
-```sql
-
-CREATE TABLE video (
-  "id" serial,
-  "keywords" text,
-  "name" text,
-  "createTime" timestamptz,
-  _id varchar(24),
-  PRIMARY KEY ("id")
-);
-
-COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
-
-```
-
-# 视频完成状态
-```sql
-
-CREATE TYPE e_finish_state AS ENUM ('unfinish', 'finish', 'perfect');
-CREATE TYPE e_stage AS ENUM ('primary', 'middle', 'high');
-
-CREATE TABLE "videoStatus" (
-  "userId" uuid REFERENCES "user" (id),
-  "videoId" integer NOT NULL,
-  "state" e_finish_state,
-  subject e_subject NOT NULL,
-  stage e_stage NOT NULL,
-  "finishTime" timestamptz,
-  "createTime" timestamptz default current_timestamp,
-  PRIMARY KEY ("userId", "videoId")
-);
-
-CREATE INDEX "video_status_create_time_idx" ON  "videoStatus" ("createTime");
-
-COMMENT ON COLUMN "videoStatus"."videoId" IS 'REFERENCES can not use on foreign table';
-
-
--- 练习完成状态
-
-CREATE TABLE "practiceStatus" (
-  "userId" uuid REFERENCES "user" (id),
-  "practiceId" integer REFERENCES video (id) ON DELETE CASCADE,
-  "state" e_finish_state,
-  subject e_subject NOT NULL check (subject='math'),
-  stage: e_stage,
-  "finishTime" timestamptz,
-  "createTime" timestamptz default current_timestamp,
-  PRIMARY KEY ("userId", "practiceId")
-);
-
-CREATE INDEX "practice_status_create_time_idx" ON  "practiceStatus" ("createTime");
-
-```
 
