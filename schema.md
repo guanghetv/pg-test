@@ -106,22 +106,6 @@ COMMENT ON COLUMN video._id IS 'ObjectId in mongodb';
 
 ```
 
-# 知识点内容(视频&练习)的多对多关系
-
-```sql
-
-CREATE TYPE topic_module_type AS ENUM ('video', 'practice');
-
-CREATE TABLE "topicModule" (
-  "topicId" int REFERENCES topic(id) ON DELETE CASCADE,
-  "moduleId" int,
-  "type" topic_module_type,
-  "createTime" timestamptz default current_timestamp,
-  "updateTime" timestamptz,
-  PRIMARY KEY ("topicId", "moduleId", "type")
-);
-
-```
 
 # 题库
 
