@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 # from pymongo import MongoClient
 import psycopg2
 import psycopg2.extras
