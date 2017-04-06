@@ -56,8 +56,9 @@ def mock(limit, offset):
 
                 try:
                     videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished'))
-                except e:
-                    raise 'error: ', e
+                except Exception as e:
+                    print 'error: ', e
+                    raise e
 
             conn.commit()
 
