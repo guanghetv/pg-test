@@ -19,7 +19,7 @@ dictCursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 # video map, exclude 初中物理
 dictCursor.execute("""
-    select count(*) from video v
+    select * from video v
         where not exists
         (select * from video v1 where v.subject = 'physics' and v.stage = 'middle');
     """)
