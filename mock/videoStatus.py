@@ -45,28 +45,31 @@ def mock(limit, offset):
 
         with conn.cursor() as videoStatusCur:
 
+            hasError = False
+
             # TODO: 需要把用户完成视频的记录打散，更加随机
-            try:
-                for video in videos:
-                    videoId = video['id']
-                    subject = video['subject']
-                    stage = video['stage']
+            for video in videos:
+                videoId = video['id']
+                subject = video['subject']
+                stage = video['stage']
 
-                    # TODO: 需要随机完成状态
-                    sql = """
-                        INSERT INTO "videoStatus" ("userId","videoId","finishTime",state, subject, stage) \
-                        VALUES (%s, %s, %s, %s, %s, %s) """
+                # TODO: 需要随机完成状态
+                sql = """
+                    INSERT INTO "videoStatus" ("userId","videoId","finishTime",state, subject, stage) \
+                    VALUES (%s, %s, %s, %s, %s, %s) """
 
-                    try:
-                        videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished', subject, stage))
-                    except Exception as e:
-                        print 'error: ', e
-                        raise e
+                try:
+                    videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished', subject, stage))
+                except Exception as e:
+                    print 'error: ', e
+                    hasError = True
+                    break
+                    # raise e
 
-                conn.commit()
-            except Exception as e:
-                print 'catch raise: ', e
+            if (hasError):
                 conn.rollback()
+            else:
+                conn.commit()
 
     dictCursor.close()
     conn.close()
@@ -76,7 +79,7 @@ def mock(limit, offset):
 
 # mock(1, 0)
 
-# multiprocessing, user count: [1, 10]
+# multiprocessing
 beginTime = time.time()
 CPU_COUNT = 10
 LIMIT = 1
