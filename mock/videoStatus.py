@@ -54,7 +54,7 @@ def mock(limit, offset):
                 # TODO: 需要随机完成状态
                 sql = """
                     INSERT INTO "videoStatus" ("userId","videoId","finishTime",state, subject, stage) \
-                    VALUES (%s, %s, %s, %s) """
+                    VALUES (%s, %s, %s, %s, %s, %s) """
 
                 try:
                     videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished', subject, stage))
