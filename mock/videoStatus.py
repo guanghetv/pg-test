@@ -69,13 +69,13 @@ def mock(limit, offset):
 
 # mock(1, 0)
 
-# multiprocessing, user count: [1, 2000]
+# multiprocessing, user count: [1, 11]
 beginTime = time.time()
-CPU_COUNT = 20
-LIMIT = 100
+CPU_COUNT = 10
+LIMIT = 1
 
 pool = multiprocessing.Pool(processes=CPU_COUNT)
-for i in range(CPU_COUNT+1):
+for i in range(CPU_COUNT):
     offset = i*LIMIT
     pool.apply_async(mock, (LIMIT, offset, ))
 
