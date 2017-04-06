@@ -7,7 +7,7 @@ import time
 import multiprocessing
 
 dbUser = 'master'
-host = 'onions-test0314.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
+host = 'onion-t02.cij1ctkoj9l3.rds.cn-north-1.amazonaws.com.cn'
 
 # dbUser = 'postgres'
 # host = '10.8.2.42'
