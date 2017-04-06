@@ -19,7 +19,7 @@ dictCursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 # video map, exclude 初中物理
 dictCursor.execute("""
-    select * from video v
+    SELECT * from video v
         where not exists
         (select * from video v1 where v.subject = 'physics' and v.stage = 'middle');
     """)
@@ -70,7 +70,7 @@ def mock(limit, offset):
 
 # mock(1, 0)
 
-# multiprocessing, user count: [1, 11]
+# multiprocessing, user count: [1, 10]
 beginTime = time.time()
 CPU_COUNT = 10
 LIMIT = 1
