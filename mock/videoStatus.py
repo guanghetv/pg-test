@@ -48,14 +48,16 @@ def mock(limit, offset):
             # TODO: 需要把用户完成视频的记录打散，更加随机
             for video in videos:
                 videoId = video['id']
+                subject = video['subject']
+                stage = video['stage']
 
                 # TODO: 需要随机完成状态
                 sql = """
-                    INSERT INTO "videoStatus" ("userId","videoId","finishTime",state) \
+                    INSERT INTO "videoStatus" ("userId","videoId","finishTime",state, subject, stage) \
                     VALUES (%s, %s, %s, %s) """
 
                 try:
-                    videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished'))
+                    videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished', subject, stage))
                 except Exception as e:
                     print 'error: ', e
                     raise e
