@@ -46,23 +46,28 @@ def mock(limit, offset):
         with conn.cursor() as videoStatusCur:
 
             # TODO: 需要把用户完成视频的记录打散，更加随机
+            params = []
+
             for video in videos:
                 videoId = video['id']
                 subject = video['subject']
                 stage = video['stage']
 
-                sql = """
-                    INSERT INTO "videoStatus" ("userId","videoId","finishTime",state, subject, stage) \
-                    VALUES (%s, %s, %s, %s, %s, %s) """
+                params.append((userId, videoId, None, 'unfinished', subject, stage))
 
-                try:
-                    videoStatusCur.execute(sql, (userId, videoId, None, 'unfinished', subject, stage))
-                    conn.commit()
-                except Exception as e:
-                    print 'error: ', e
-                    conn.rollback()
-                    # break
-                    # raise e
+
+            # batch
+            sql = """
+                INSERT INTO "videoStatus" ("userId","videoId","finishTime",state, subject, stage)
+                VALUES (%s, %s, %s, %s, %s, %s) """
+
+            try:
+                videoStatusCur.executemany(sql, params)
+                conn.commit()
+            except Exception as e:
+                print 'error: ', e
+                conn.rollback()
+                # raise e
 
     dictCursor.close()
     conn.close()
