@@ -61,7 +61,7 @@ def mock(limit, offset):
                 except Exception as e:
                     print 'error: ', e
                     conn.rollback()
-                    break
+                    # break
                     # raise e
 
     dictCursor.close()
