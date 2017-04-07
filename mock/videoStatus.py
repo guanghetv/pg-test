@@ -36,7 +36,7 @@ def mock(limit, offset):
     dictCursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     # user
-    dictCursor.execute('select * from "user" LIMIT {} OFFSET {};'.format(limit, offset))
+    dictCursor.execute('SELECT * from "user" order by id asc OFFSET {} LIMIT {};'.format(limit, offset))
 
     print 'limit, offset ', limit, offset
 
