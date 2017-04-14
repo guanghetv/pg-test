@@ -44,7 +44,7 @@ def mock(start, end):
             _sql = dictCursor.mogrify(sql, (userId,))
             dictCursor.execute(_sql)
 
-            # print dictCursor.fetchone()
+            dictCursor.fetchone()
             # conn.commit()
         except Exception as e:
             print 'error: ', e

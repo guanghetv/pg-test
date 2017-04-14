@@ -293,3 +293,106 @@ alter table "user" alter COLUMN channel type varchar(30);
 ```
 
 
+# dailysignins
+
+```sql
+
+CREATE TYPE e_aim AS ENUM ('simple', 'difficult');
+CREATE TYPE user_learning_time AS (
+    video float,
+    practice float
+);
+
+CREATE TYPE user_abilities AS (
+    _id int,
+    name text,
+    scores int
+);
+
+
+CREATE TABLE "dailySignin" (
+    "userId" varchar(24) NOT NULL,
+    "level" int NOT NULL,
+    "nickname" text,
+    "channel" text,
+    "school" varchar(24),
+    "customSchool" text,
+    "aim" e_aim,
+    "name" varchar(99),
+    "type" regist_type,
+    "from" e_from,
+    "role" e_role,
+    "email" varchar(99),
+    "phone" varchar(99),
+    "coins" int NOT NULL,
+    "points" int NOT NULL,
+    "scores" int NOT NULL,
+    "region" varchar(16),
+    "nation" varchar(16),
+    "gender" e_gender,
+    "province" varchar(16),
+    "semester" text,
+    "publisher" text,
+    "registTime" timestamptz,
+    "weekScores" int NOT NULL,
+    "activateDate" timestamptz,
+    "verifiedByPhone" bool,
+    "vipExpirationTime" timestamptz,
+    "qqOpenId" varchar(40),
+    "createTime" timestamptz,
+    "learningTime" jsonb NOT NULL,
+    "clientType" text,
+    "clientVersion" text,
+    "deviceId" text,
+    "userAgent" text,
+    "signInDate" Date NOT NULL,
+    "year" int,
+    "month" int,
+    "day" int,
+    "hour" int,
+    "weekday" int,
+    "week" int,
+
+    PRIMARY KEY ("userId", "signInDate")
+);
+
+CREATE INDEX ON  "dailySignin" ("signInDate");
+CREATE INDEX ON  "dailySignin" ("level");
+
+CREATE INDEX ON  "dailySignin" ("channel");
+CREATE INDEX ON  "dailySignin" ("school");
+CREATE INDEX ON  "dailySignin" ("aim");
+
+CREATE INDEX ON  "dailySignin" ("type");
+CREATE INDEX ON  "dailySignin" ("from");
+CREATE INDEX ON  "dailySignin" ("role");
+
+CREATE INDEX ON  "dailySignin" ("coins");
+CREATE INDEX ON  "dailySignin" ("points");
+CREATE INDEX ON  "dailySignin" ("scores");
+CREATE INDEX ON  "dailySignin" ("region");
+CREATE INDEX ON  "dailySignin" ("gender");
+
+CREATE INDEX ON  "dailySignin" ("publisher", "semester");
+
+CREATE INDEX ON  "dailySignin" ("registTime");
+CREATE INDEX ON  "dailySignin" ("activateDate");
+CREATE INDEX ON  "dailySignin" ("vipExpirationTime");
+
+CREATE INDEX ON  "dailySignin" ("clientType");
+CREATE INDEX ON  "dailySignin" ("clientVersion");
+CREATE INDEX ON  "dailySignin" ("deviceId");
+CREATE INDEX ON  "dailySignin" ("userAgent");
+
+
+CREATE INDEX ON  "dailySignin" using gin (("learningTime" -> 'video'));
+CREATE INDEX ON  "dailySignin" using gin (("learningTime" -> 'practice'));
+
+
+
+
+```
+
+
+
+
