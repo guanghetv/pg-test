@@ -14,7 +14,7 @@ parentDir = os.path.dirname(currentDir)
 # dailysignins
 if (os.path.isfile(parentDir +'/data/dailysignins.csv') == False):
     os.system("""
-        ssh -n master@10.8.8.8 "mongoexport -h 10.8.8.8 -d onion40-0413 -c dailysignins --fields userId,level,nickname,channel,school,customSchool,aim,name,type,from,role,email,phone,coins,points,scores,region,nation,gender,province,semester,publisher,registTime,weekScores,activateDate,verifiedByPhone,vipExpirationTime,qqOpenId,createTime,clientType,clientVersion,deviceId,userAgent,signInDate,year,month,day,hour,weekday,week --type=csv -o data/dailysignins.csv" with (delimiter '|')
+        ssh -n master@10.8.8.8 "mongoexport -h 10.8.8.8 -d onion40-0413 -c dailysignins --fields userId,level,nickname,channel,school,customSchool,aim,name,type,from,role,email,phone,coins,points,scores,region,nation,gender,province,semester,publisher,registTime,weekScores,activateDate,verifiedByPhone,vipExpirationTime,qqOpenId,createTime,clientType,clientVersion,deviceId,userAgent,signInDate,year,month,day,hour,weekday,week --type=csv -o data/dailysignins.csv"
     """)
 
     print 'mongoexport finished'
@@ -30,7 +30,7 @@ if (os.path.isfile(parentDir +'/data/dailysignins.csv') == False):
     wFile = open('data/dailysignins_new.csv', 'a')
 
     # replace
-    filename = "data/dailysignins_t.csv"
+    filename = "data/dailysignins.csv"
     with open(filename, 'r') as file:
         for line in file:
             #convert objectId
