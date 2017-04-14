@@ -340,7 +340,6 @@ CREATE TABLE "dailySignin" (
     "vipExpirationTime" timestamptz,
     "qqOpenId" varchar(40),
     "createTime" timestamptz,
-    "learningTime" jsonb NOT NULL,
     "clientType" text,
     "clientVersion" text,
     "deviceId" text,
@@ -383,12 +382,6 @@ CREATE INDEX ON  "dailySignin" ("clientType");
 CREATE INDEX ON  "dailySignin" ("clientVersion");
 CREATE INDEX ON  "dailySignin" ("deviceId");
 CREATE INDEX ON  "dailySignin" ("userAgent");
-
-
-CREATE INDEX ON  "dailySignin" using gin (("learningTime" -> 'video'));
-CREATE INDEX ON  "dailySignin" using gin (("learningTime" -> 'practice'));
-
-
 
 
 ```
