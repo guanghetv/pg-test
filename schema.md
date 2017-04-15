@@ -360,7 +360,6 @@ CREATE INDEX ON  "dailySignin" ("level");
 
 CREATE INDEX ON  "dailySignin" ("channel");
 CREATE INDEX ON  "dailySignin" ("school");
-CREATE INDEX ON  "dailySignin" ("aim");
 
 CREATE INDEX ON  "dailySignin" ("type");
 CREATE INDEX ON  "dailySignin" ("from");
@@ -376,7 +375,6 @@ CREATE INDEX ON  "dailySignin" ("publisher", "semester");
 
 CREATE INDEX ON  "dailySignin" ("registTime");
 CREATE INDEX ON  "dailySignin" ("activateDate");
-CREATE INDEX ON  "dailySignin" ("vipExpirationTime");
 
 CREATE INDEX ON  "dailySignin" ("clientType");
 CREATE INDEX ON  "dailySignin" ("clientVersion");
