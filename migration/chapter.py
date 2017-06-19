@@ -60,19 +60,38 @@ db = mongo['onions4']
 chapters = db['chapters']
 
 # psycopg2
-conn = psycopg2.connect("password=Yangcong345 host=10.8.8.8 port=5432 dbname=postgres user=postgres")
-# conn = psycopg2.connect("password=Yangcong345 host=onion345.pg.rds.aliyuncs.com port=3432 dbname=onion user=onions")
-cur = conn.cursor()
+conn = psycopg2.connect("""
+    password=Yangcong345
+    host=10.8.8.8
+    port=5432
+    dbname=postgres
+    user=postgres""")
+
+# conn = psycopg2.connect("""
+#     password=Yangcong345
+#     host=onion345.pg.rds.aliyuncs.com
+#     port=3432
+#     dbname=onion
+#     user=onions""")
+
 
 ###
 filename = 'data/chapters.csv'
 
 with conn.cursor() as cur:
-    for chapter in chapters.find():
+    for chapter in chapters.find({'status': 'published'}):
         sql = """
-            INSERT INTO chapter 
-                ("publisherId","semesterId","subjectId","stageId",name,"state","order","includePay")
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
+            INSERT INTO chapter (
+                "publisherId",
+                "semesterId",
+                "subjectId",
+                "stageId",
+                name,
+                "state",
+                "order",
+                "includePay"
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
 
         try:
             cur.execute(sql,
