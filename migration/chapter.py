@@ -89,9 +89,10 @@ with conn.cursor() as cur:
                 name,
                 "state",
                 "order",
-                "includePay"
+                "includePay",
+                _id
             )
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"""
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
         try:
             cur.execute(sql,
@@ -102,7 +103,8 @@ with conn.cursor() as cur:
                     chapter['name'],
                     chapter['status'],
                     chapter['order'],
-                    chapter['includeCharges']))
+                    chapter['includeCharges'],
+                    str(chapter['_id'])))
 
             conn.commit()
         except Exception as e:
