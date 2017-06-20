@@ -171,3 +171,7 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             exit()
 
 conn.close()
+
+
+# check relate unique later 等录入处理完后
+
