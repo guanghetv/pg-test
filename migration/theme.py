@@ -40,19 +40,13 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
 
                 pgChapter = cur.fetchone()
 
-                # print pgChapter['id']
-                # exit()
-
                 # tranform
+                coverImages = None
                 if ('desc' in theme and 'images' in theme['desc']):
                     coverImages = theme['desc']['images']
-                    if not coverImages:
-                        coverImages = None
-                else:
-                    coverImages = None
 
                 _coverImages = None
-                if (coverImages is not None):
+                if (coverImages is not None and (len(coverImages) > 0)):
                     _coverImages = "{"+ coverImages[0] +"}"
 
                 # desc.text
@@ -78,9 +72,6 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                     icon1['background'],
                     'perfect'
                 )
-
-                # print icons
-                # exit()
 
                 # INSERT
                 sql = cur.mogrify("""
