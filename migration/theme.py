@@ -18,12 +18,15 @@ conn = psycopg2.connect("""
     dbname=postgres
     user=postgres""")
 
+
 # conn = psycopg2.connect("""
 #     password=Yangcong345
 #     host=onion345.pg.rds.aliyuncs.com
 #     port=3432
 #     dbname=onion
 #     user=onions""")
+
+counter = 0
 
 with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
     for chapter in chapters.find({'status': 'published'}):
@@ -123,6 +126,9 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
 
                 cur.execute(sql)
                 conn.commit()
+
+                counter += 1
+                print counter
             except Exception as e:
                 print sql
                 print chapter
@@ -133,5 +139,35 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
 
                 exit()
                 # raise e
+
+# conn.close()
+
+
+print 'begin update relatedThemeId'
+
+
+with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+    cur.execute('select * from theme where related NOTNULL')
+    for theme in cur:
+
+        # get new themeId
+        _theme = None
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur1:
+            cur1.execute('select * from theme where related = %s', (theme['related'],))
+            _theme = cur1.fetchone()
+
+        # update
+        try:
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur2:
+                sql = cur2.mogrify('update theme set "relatedThemeId" = %s where id = %s',
+                        # ('d9808030-5589-11e7-8120-8bfb78f1b82b', theme['id']))
+                        (_theme['id'], theme['id']))
+
+                cur2.execute(sql)
+                conn.commit()
+        except Exception as e:
+            print 'error: ', e
+            conn.rollback()
+            exit()
 
 conn.close()
