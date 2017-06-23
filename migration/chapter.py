@@ -64,7 +64,7 @@ conn = psycopg2.connect("""
     password=Yangcong345
     host=10.8.8.8
     port=5432
-    dbname=postgres
+    dbname=test
     user=postgres""")
 
 # conn = psycopg2.connect("""

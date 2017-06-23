@@ -15,7 +15,7 @@ conn = psycopg2.connect("""
     password=Yangcong345
     host=10.8.8.8
     port=5432
-    dbname=postgres
+    dbname=test
     user=postgres""")
 
 
@@ -84,11 +84,10 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                         "pay",
                         "state",
                         "icons",
-                        "relatedThemeId",
-                        "related",
                         "hasPainPoint",
                         "hasKeyPoint",
                         "coverImages",
+                        "order",
                         "description",
                         _id)
                     VALUES (
@@ -97,7 +96,6 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                         %s,
                         %s,
                         ARRAY[%s, %s]::theme_icon[],
-                        %s,
                         %s,
                         %s,
                         %s,
@@ -113,11 +111,10 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                         'published', # 暂时都填充已发布
                         i1,
                         i2,
-                        None, # 稍后更新 relatedThemeId
-                        str(theme['related']) if ('related' in theme) else None,
                         theme['hasPainPoint'] if ('hasPainPoint' in theme) else False,
                         theme['hasKeyPoint'] if ('hasKeyPoint' in theme) else False,
                         _coverImages,
+                        1, # order
                         text,
                         str(theme['_id'])))
 
@@ -140,37 +137,37 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                 exit()
                 # raise e
 
-# conn.close()
-
-
-print 'begin update relatedThemeId'
-
-
-with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-    cur.execute('select * from theme where related NOTNULL')
-    for theme in cur:
-
-        # get new themeId
-        _theme = None
-        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur1:
-            cur1.execute('select * from theme where related = %s', (theme['related'],))
-            _theme = cur1.fetchone()
-
-        # update
-        try:
-            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur2:
-                sql = cur2.mogrify('update theme set "relatedThemeId" = %s where id = %s',
-                        # ('d9808030-5589-11e7-8120-8bfb78f1b82b', theme['id']))
-                        (_theme['id'], theme['id']))
-
-                cur2.execute(sql)
-                conn.commit()
-        except Exception as e:
-            print 'error: ', e
-            conn.rollback()
-            exit()
-
 conn.close()
+
+
+# print 'begin update relatedThemeId'
+
+
+# with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+#     cur.execute('select * from theme where related NOTNULL')
+#     for theme in cur:
+
+#         # get new themeId
+#         _theme = None
+#         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur1:
+#             cur1.execute('select * from theme where related = %s', (theme['related'],))
+#             _theme = cur1.fetchone()
+
+#         # update
+#         try:
+#             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur2:
+#                 sql = cur2.mogrify('update theme set "relatedThemeId" = %s where id = %s',
+#                         # ('d9808030-5589-11e7-8120-8bfb78f1b82b', theme['id']))
+#                         (_theme['id'], theme['id']))
+
+#                 cur2.execute(sql)
+#                 conn.commit()
+#         except Exception as e:
+#             print 'error: ', e
+#             conn.rollback()
+#             exit()
+
+# conn.close()
 
 
 # check relate unique later 等录入处理完后

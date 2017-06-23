@@ -16,7 +16,7 @@ conn = psycopg2.connect("""
     password=Yangcong345
     host=10.8.8.8
     port=5432
-    dbname=postgres
+    dbname=test
     user=postgres""")
 
 
@@ -57,9 +57,10 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                 "keyPoint",
                 "painPoint",
                 "coverImage",
+                "order",
                 "description",
                 _id)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
             (
                 themeId,
                 topic['name'],
@@ -69,6 +70,7 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                 topic['keyPoint'] if ('keyPoint' in topic) else False,
                 topic['painPoint'] if ('painPoint' in topic) else None,
                 topic['coverPic'] if ('coverPic' in topic) else None,
+                1, # order
                 topic['desc'] if ('desc' in topic) else None,
                 str(topic['_id'])))
 
