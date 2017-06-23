@@ -44,7 +44,8 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
         # topic
         for topic in topics.find({
             '_id': {'$in': topicIds},
-            'type': {'$nin': ['jyfs','dtsz','chapter_exam']}}):
+            'type': {'$nin': ['jyfs','dtsz','chapter_exam']},
+            'subject': {'$ne': 'physics'}}):
             # print topic
 
             sql = cur.mogrify("""INSERT INTO topic (
