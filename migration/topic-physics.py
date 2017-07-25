@@ -73,7 +73,7 @@ with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                 'published',
                 topic['keyPoint'] if ('keyPoint' in topic) else False,
                 topic['painPoint'] if ('painPoint' in topic) else None,
-                topic['coverPic'] if ('coverPic' in topic) else None,
+                topic['coverPic'] if ('coverPic' in topic and topic['coverPic'] != '') else None,
                 1, # order
                 topic['desc'] if ('desc' in topic) else None,
                 str(topic['_id'])))
