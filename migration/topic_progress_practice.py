@@ -65,7 +65,7 @@ def run (skip, limit):
         myProgress = topicprogresses.find().skip(skip*limit).limit(limit)
 
         print 'fork: skip from %d, limit %d' % (skip*limit, limit)
-        sleep(60)
+        sleep(3)
 
         for topicprogress in myProgress:
             # print topicprogress
@@ -112,6 +112,10 @@ def run (skip, limit):
 
             # compose
             args_str = ','.join(cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', x) for x in tup)
+            if (len(tup) == 0):
+                continue
+
+            # print 'args_str ', args_str
             cur.execute("""
                 INSERT INTO problem_log (
                     "userId",
@@ -150,6 +154,8 @@ for i in range(CPU_COUNT+1):
 
 pool.close()
 pool.join()
+
+# run(0, 507*2-1)
 
 
 
