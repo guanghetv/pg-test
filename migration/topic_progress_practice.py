@@ -10,14 +10,17 @@ from datetime import datetime, timedelta
 from pytz import timezone, utc
 import time
 import multiprocessing
+from time import sleep
 
+
+# TODO: clean 重复提交做题数据
 
 def run (skip, limit):
     beginTime = time.time()
 
     # pymongo
-    mongo = MongoClient(host='10.8.8.8', port=27017, connect=True)
-    db = mongo['onions4']
+    mongo = MongoClient(host='10.8.8.12', port=27017, connect=True)
+    db = mongo['onions-0926']
     topicprogresses = db['topicprogresses']
 
     # psycopg2
@@ -60,7 +63,9 @@ def run (skip, limit):
 
     with conn_mydb.cursor() as cur:
         myProgress = topicprogresses.find().skip(skip*limit).limit(limit)
+
         print 'fork: skip from %d, limit %d' % (skip*limit, limit)
+        sleep(60)
 
         for topicprogress in myProgress:
             # print topicprogress
@@ -73,66 +78,57 @@ def run (skip, limit):
             # print topicprogress
 
             if ('_id' not in topicprogress['video']):
-                print 'lack of video id', topicprogress['_id']
+                # print 'lack of video id', topicprogress['_id']
                 continue
 
             oldVideoId = str(topicprogress['video']['_id'])
             userId = str(topicprogress['userId'])
 
+            tup = []
             for problem in topicprogress['practice']['problems']:
-                try:
-                    oldProblemID = str(problem['_id'])
-                    if (oldProblemID not in problemMap):
-                        print 'the problem not exists in pg'
-                        continue
+                oldProblemID = str(problem['_id'])
+                if (oldProblemID not in problemMap):
+                    print 'the problem not exists in pg'
+                    continue
 
-                    # str(problem['time'].split('.')[0]
-                    mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
-                    mytime += timedelta(hours=8)
+                mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
+                mytime += timedelta(hours=8)
 
-                    sql = cur.mogrify("""
-                        INSERT INTO problem_log (
-                            "userId",
-                            "videoId",
-                            "problemId",
-                            "subjectId",
-                            "stageId",
-                            duration,
-                            level,
-                            answers,
-                            correct,
-                            "submitTime",
-                            type
-                        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                        (
-                            userId,
-                            videoMap[oldVideoId]['id'],
-                            problemMap[oldProblemID]['id'],
-                            problemMap[oldProblemID]['subjectId'],
-                            problemMap[oldProblemID]['stageId'],
-                            problem['duration'] if ('duration' in problem) else None,
-                            problem['levelNo'],
-                            problem['answers'],
-                            # problem['answers'].encode('utf-8'),
-                            problem['correct'],
-                            mytime,
-                            problemMap[oldProblemID]['type']
-                        ))
+                ##
+                tup.append((
+                    userId,
+                    videoMap[oldVideoId]['id'],
+                    problemMap[oldProblemID]['id'],
+                    problemMap[oldProblemID]['subjectId'],
+                    problemMap[oldProblemID]['stageId'],
+                    problem['duration'] if ('duration' in problem) else None,
+                    problem['levelNo'],
+                    problem['answers'],
+                    # problem['answers'].encode('utf-8'),
+                    problem['correct'],
+                    mytime,
+                    problemMap[oldProblemID]['type']
+                ))
 
-                    # print 'sql', sql
+            # compose
+            args_str = ','.join(cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', x) for x in tup)
+            cur.execute("""
+                INSERT INTO problem_log (
+                    "userId",
+                    "videoId",
+                    "problemId",
+                    "subjectId",
+                    "stageId",
+                    duration,
+                    level,
+                    answers,
+                    correct,
+                    "submitTime",
+                    type
+                ) VALUES """ + args_str)
+            conn_mydb.commit()
 
-                    cur.execute(sql)
-                    conn_mydb.commit()
-
-                    # exit()
-                except Exception as e:
-                    print sql
-                    print 'problem ', problem
-
-                    traceback.print_exc()
-                    conn_mydb.rollback()
-
-                    exit()
+            # conn_mydb.rollback()
 
     conn_mydb.close()
 
@@ -142,8 +138,8 @@ def run (skip, limit):
 
 # fork
 
-total_count = 51762006
-CPU_COUNT = 200
+total_count = 96323661
+CPU_COUNT = 100
 LIMIT = total_count/CPU_COUNT
 
 
