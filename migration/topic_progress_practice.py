@@ -59,7 +59,7 @@ def run (skip, limit):
     # print problemMap
 
 
-    # counter = 0
+    counter = 0
 
     with conn_mydb.cursor() as cur:
         myProgress = topicprogresses.find().skip(skip*limit).limit(limit)
@@ -68,14 +68,11 @@ def run (skip, limit):
         sleep(3)
 
         for topicprogress in myProgress:
-            # print topicprogress
+            counter = counter + 1
 
-            # counter = counter + 1
-            # if (counter >= 100000):
-            #     exit()
-
-
-            # print topicprogress
+            if (counter % 10000 == 0): # reduce stdout
+                print 'counter: ', counter
+                print time.time() - beginTime
 
             if ('_id' not in topicprogress['video']):
                 # print 'lack of video id', topicprogress['_id']
@@ -88,7 +85,7 @@ def run (skip, limit):
             for problem in topicprogress['practice']['problems']:
                 oldProblemID = str(problem['_id'])
                 if (oldProblemID not in problemMap):
-                    print 'the problem not exists in pg'
+                    # print 'the problem not exists in pg'
                     continue
 
                 mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
@@ -116,23 +113,29 @@ def run (skip, limit):
                 continue
 
             # print 'args_str ', args_str
-            cur.execute("""
-                INSERT INTO problem_log (
-                    "userId",
-                    "videoId",
-                    "problemId",
-                    "subjectId",
-                    "stageId",
-                    duration,
-                    level,
-                    answers,
-                    correct,
-                    "submitTime",
-                    type
-                ) VALUES """ + args_str)
-            conn_mydb.commit()
 
-            # conn_mydb.rollback()
+            try:
+                cur.execute("""
+                    INSERT INTO problem_log (
+                        "userId",
+                        "videoId",
+                        "problemId",
+                        "subjectId",
+                        "stageId",
+                        duration,
+                        level,
+                        answers,
+                        correct,
+                        "submitTime",
+                        type
+                    ) VALUES """ + args_str)
+                conn_mydb.commit()
+            except Exception as e:
+                traceback.print_exc(file=sys.stdout)
+                print 'args_str ', args_str
+
+                conn_mydb.rollback()
+                exit()
 
     conn_mydb.close()
 
