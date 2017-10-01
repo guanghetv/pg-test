@@ -71,10 +71,10 @@ def run (skip, limit):
 
         for user in user_cur:
             #
-            counter = counter + 1
-            if (counter % 10000 == 0): # reduce stdout
-                print 'counter: ', counter
-                print time.time() - beginTime
+            # counter = counter + 1
+            # if (counter % 10000 == 0): # reduce stdout
+            #     print 'counter: ', counter
+            #     print time.time() - beginTime
 
             myProgress = topicprogresses.find({"userId" : user['_id']})
 
