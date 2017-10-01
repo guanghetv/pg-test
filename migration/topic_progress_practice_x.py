@@ -158,16 +158,16 @@ def run (skip, limit):
                 raise e
 
 
-        conn_study.close()
+    conn_study.close()
 
-        endTime = time.time()
-        print 'take time: ', endTime - beginTime
+    endTime = time.time()
+    print 'take time: ', endTime - beginTime
 
 
 # fork
 
 total_count = 9272721
-CPU_COUNT = 100
+CPU_COUNT = 70
 LIMIT = total_count/CPU_COUNT
 
 
