@@ -8,7 +8,6 @@ import re
 import sys
 import traceback
 from datetime import datetime, timedelta
-from pytz import timezone, utc
 import time
 import multiprocessing
 from time import sleep
@@ -100,8 +99,13 @@ def run (skip, limit):
                             # print 'the problem not exists in pg'
                             continue
 
-                        mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
-                        mytime += timedelta(hours=8)
+                        #
+                        try:
+                            mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
+                            mytime += timedelta(hours=8)
+                        except Exception as e:
+                            traceback.print_exc()
+                            continue
 
                         ##
                         tup.append((
@@ -162,8 +166,8 @@ def run (skip, limit):
 
 # fork
 
-total_count = 100000
-CPU_COUNT = 10
+total_count = 9272721
+CPU_COUNT = 100
 LIMIT = total_count/CPU_COUNT
 
 
