@@ -110,20 +110,44 @@ def run (skip, limit):
                                 continue
 
                             ##
-                            tup.append((
-                                userId,
-                                videoMap[oldVideoId]['id'] if (oldVideoId in videoMap) else oldVideoId,
-                                problemMap[oldProblemID]['id'] if (oldProblemID in problemMap) else oldProblemID,
-                                problemMap[oldProblemID]['subjectId'],
-                                problemMap[oldProblemID]['stageId'],
-                                problem['duration'] if ('duration' in problem) else None,
-                                # problem['levelNo'],
-                                problem['answers'],
-                                # problem['answers'].encode('utf-8'),
-                                problem['correct'],
-                                mytime,
-                                problemMap[oldProblemID]['type']
-                            ))
+                            try:
+                                _tuple = (
+                                    userId,
+                                    videoMap[oldVideoId]['id'] if (oldVideoId in videoMap) else oldVideoId,
+                                    problemMap[oldProblemID]['id'] if (oldProblemID in problemMap) else oldProblemID,
+                                    problemMap[oldProblemID]['subjectId'],
+                                    problemMap[oldProblemID]['stageId'],
+                                    problem['duration'] if ('duration' in problem) else None,
+                                    # problem['levelNo'],
+                                    problem['answers'],
+                                    # problem['answers'].encode('utf-8'),
+                                    problem['correct'],
+                                    mytime,
+                                    problemMap[oldProblemID]['type']
+                                )
+                                sql = cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', _tuple)
+                                tup.append(sql)
+                            except Exception as e:
+                                print '_tuple ', _tuple
+                                traceback.print_exc()
+                                raise e
+
+
+                            # tup.append((
+                            #     userId,
+                            #     videoMap[oldVideoId]['id'] if (oldVideoId in videoMap) else oldVideoId,
+                            #     problemMap[oldProblemID]['id'] if (oldProblemID in problemMap) else oldProblemID,
+                            #     problemMap[oldProblemID]['subjectId'],
+                            #     problemMap[oldProblemID]['stageId'],
+                            #     problem['duration'] if ('duration' in problem) else None,
+                            #     # problem['levelNo'],
+                            #     problem['answers'],
+                            #     # problem['answers'].encode('utf-8'),
+                            #     problem['correct'],
+                            #     mytime,
+                            #     problemMap[oldProblemID]['type']
+                            # ))
+
                     except Exception as e:
                         traceback.print_exc()
                         raise e
@@ -136,7 +160,8 @@ def run (skip, limit):
                     # print 'tup null'
                     continue
 
-                args_str = ','.join(cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', x) for x in tup)
+                args_str = ','.join(x for x in tup)
+                # args_str = ','.join(cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', x) for x in tup)
                 # print 'args_str ', args_str
 
                 try:
@@ -181,7 +206,7 @@ def run (skip, limit):
 
 try:
     total_count = 9272721
-    CPU_COUNT = 70
+    CPU_COUNT = 60
     LIMIT = total_count/CPU_COUNT
 
 
