@@ -67,7 +67,7 @@ def run (skip, limit):
 
         with conn_study.cursor() as cur:
             # user_cur = users.find({"_id" : ObjectId("59a8d046d055b307305cd350")})
-            user_cur = users.find().skip(skip*limit).limit(limit)
+            user_cur = users.find({}, no_cursor_timeout=True).skip(skip*limit).limit(limit)
             print 'fork: skip from %d, limit %d' % (skip*limit, limit)
             # sleep(6)
 
@@ -78,7 +78,7 @@ def run (skip, limit):
                 #     print 'counter: ', counter
                 #     print time.time() - beginTime
 
-                myProgress = topicprogresses.find({"userId" : user['_id']})
+                myProgress = topicprogresses.find({"userId" : user['_id']}, no_cursor_timeout=True)
 
                 # myProgress = topicprogresses.find().skip(skip*limit).limit(limit)
 
@@ -128,6 +128,8 @@ def run (skip, limit):
                         traceback.print_exc()
                         raise e
 
+                myProgress.close()
+
 
                 # compose
                 if (len(tup) == 0):
@@ -158,6 +160,9 @@ def run (skip, limit):
                     traceback.print_exc()
                     conn_study.rollback()
                     raise e
+
+
+            user_cur.close()
 
 
         conn_study.close()
