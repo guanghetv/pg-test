@@ -105,7 +105,7 @@ def run (skip, limit):
                             try:
                                 mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
                                 mytime += timedelta(hours=8)
-                            except Exception as e:
+                            except ValueError as e:
                                 traceback.print_exc()
                                 continue
 
@@ -206,7 +206,7 @@ def run (skip, limit):
 
 try:
     total_count = 9272721
-    CPU_COUNT = 60
+    CPU_COUNT = 30
     LIMIT = total_count/CPU_COUNT
 
 
