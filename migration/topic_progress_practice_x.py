@@ -105,6 +105,7 @@ def run (skip, limit):
                             try:
                                 mytime = datetime.strptime(str(problem['time']).split('.')[0], "%Y-%m-%d %H:%M:%S")
                                 mytime += timedelta(hours=8)
+                            # '13794-04-06 01:25:12' does not match format '%Y-%m-%d %H:%M:%S'
                             except ValueError as e:
                                 traceback.print_exc()
                                 continue
@@ -127,10 +128,10 @@ def run (skip, limit):
                                 )
                                 sql = cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', _tuple)
                                 tup.append(sql)
-                            except Exception as e:
+                            except ValueError as e: # contain NUL (0x00) characters
                                 print '_tuple ', _tuple
                                 traceback.print_exc()
-                                raise e
+                                continue
 
 
                             # tup.append((
