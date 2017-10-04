@@ -39,7 +39,7 @@ def run (skip, limit):
             password=unitedmaster
             host=10.8.8.101
             port=5432
-            dbname=study
+            dbname=study_x
             user=postgres""")
 
         # video map
@@ -110,6 +110,11 @@ def run (skip, limit):
                                 traceback.print_exc()
                                 continue
 
+                            if ('serverTime' in problem):
+                                server_time = datetime.strptime(str(problem['serverTime']), "%Y-%m-%d %H:%M:%S.%f")
+                                server_time = timedelta(hours=8)
+                            else:
+                                server_time = mytime
                             ##
                             try:
                                 _tuple = (
@@ -124,7 +129,8 @@ def run (skip, limit):
                                     # problem['answers'].encode('utf-8'),
                                     problem['correct'],
                                     mytime,
-                                    problemMap[oldProblemID]['type']
+                                    problemMap[oldProblemID]['type'],
+                                    server_time
                                 )
                                 sql = cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', _tuple)
                                 tup.append(sql)
@@ -178,7 +184,8 @@ def run (skip, limit):
                             answers,
                             correct,
                             "submitTime",
-                            type
+                            type,
+                            "createTime"
                         ) VALUES """ + args_str)
                     conn_study.commit()
                 except Exception as e:
