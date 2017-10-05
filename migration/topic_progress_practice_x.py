@@ -111,7 +111,7 @@ def run (skip, limit):
                                 continue
 
                             if ('serverTime' in problem):
-                                server_time = datetime.strptime(str(problem['serverTime']), "%Y-%m-%d %H:%M:%S.%f")
+                                server_time = datetime.strptime(str(problem['serverTime']).split('.')[0], "%Y-%m-%d %H:%M:%S")
                                 server_time += timedelta(hours=8)
                             else:
                                 server_time = mytime
@@ -214,7 +214,7 @@ def run (skip, limit):
 
 try:
     total_count = 9272721
-    CPU_COUNT = 30
+    CPU_COUNT = 20
     LIMIT = total_count/CPU_COUNT
 
 
