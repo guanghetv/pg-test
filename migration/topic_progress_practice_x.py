@@ -112,7 +112,7 @@ def run (skip, limit):
 
                             if ('serverTime' in problem):
                                 server_time = datetime.strptime(str(problem['serverTime']), "%Y-%m-%d %H:%M:%S.%f")
-                                server_time = timedelta(hours=8)
+                                server_time += timedelta(hours=8)
                             else:
                                 server_time = mytime
                             ##
