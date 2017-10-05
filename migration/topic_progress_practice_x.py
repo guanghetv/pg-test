@@ -132,7 +132,7 @@ def run (skip, limit):
                                     problemMap[oldProblemID]['type'],
                                     server_time
                                 )
-                                sql = cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', _tuple)
+                                sql = cur.mogrify('(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', _tuple)
                                 tup.append(sql)
                             except ValueError as e: # contain NUL (0x00) characters
                                 print '_tuple ', _tuple
